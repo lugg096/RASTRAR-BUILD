@@ -500,7 +500,7 @@ let UsuariosComponent = class UsuariosComponent {
         };
         this.thead = [
             { key: 'name', name: 'Nombre' },
-            { key: 'group', name: 'Grupo' },
+            /*    { key: 'group', name: 'Grupo' }, */
             { key: 'docment', name: 'Documento' },
             { key: 'did', name: 'DID' },
             { key: 'status', name: 'Estado' }
@@ -518,6 +518,7 @@ let UsuariosComponent = class UsuariosComponent {
         this.listRole = [];
         this.listTypeProv = [];
         this.listAdmin = [];
+        this.listQr = [];
         this.parmasOk = false;
     }
     getParamas() {
@@ -541,6 +542,15 @@ let UsuariosComponent = class UsuariosComponent {
             this.listRole = res.result[0][src_environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].TABLE_SIS.role];
             console.log('this.listRole', this.listRole);
         });
+        if (this.userSesion.data.role.key == 'MASTER') {
+            this._apiMongo._filter(src_environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].COLLECTION.object, src_environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].TABLE_SIS.screen, { "data.certificateType.key": 'C2' }).subscribe((res) => {
+                this.listQr = res.result[0][src_environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].TABLE_SIS.screen];
+                console.log('this.listQr', this.listQr);
+            });
+        }
+        else {
+            this.listQr = this.userSesion.data.qrlist;
+        }
         this._apiMongo._get(src_environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].COLLECTION.general, src_environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].TABLE_SIS.type_proveedor, 'items').subscribe((res) => {
             this.listTypeProv = res.result[0][src_environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].TABLE_SIS.type_proveedor];
             console.log('this.listTypeProv', this.listTypeProv);
@@ -746,7 +756,8 @@ let UsuariosComponent = class UsuariosComponent {
                     listRole: this.listRole,
                     listTypeProv: this.listTypeProv,
                     listAdmin: this.listAdmin,
-                    userSesion: this.userSesion
+                    userSesion: this.userSesion,
+                    listQr: this.listQr
                 }
             });
             modal.onDidDismiss().then((res) => Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function* () {
@@ -1255,20 +1266,20 @@ let ListQrComponent = class ListQrComponent {
             console.log('ACTUALZIAR LISTADO');
             let DNI_USER = this.userSesion.data.idens[0].number;
             let EMAIL_USER = this.userSesion.data.email;
-            if (EMAIL_USER == 'admin@stamping.io') {
+            if (this.userSesion.data.role.key == 'MASTER') {
                 const emp_temp = yield this._apiMongo.get(src_environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].COLLECTION.party, src_environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].TABLE_SIS.employee, 'items');
                 console.log('emp_temp', emp_temp);
                 let listTemp = [];
                 for (let index = 0; index < emp_temp.result[0][src_environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].TABLE_SIS.employee].length; index++) {
                     let ROLE = emp_temp.result[0][src_environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].TABLE_SIS.employee][index].data.role.value;
                     let DNI = emp_temp.result[0][src_environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].TABLE_SIS.employee][index].data.idens[0].number;
-                    if (ROLE == 'Administrador') {
-                        const res = yield this._apiMongo.get(src_environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].COLLECTION.dataQrUser, DNI, 'items');
-                        console.log('res', res);
-                        if (!this._fun.isEmpty(res.result)) {
-                            listTemp = listTemp.concat(res.result[0][DNI]);
-                        }
+                    /*  if (ROLE == 'Administrador') { */
+                    const res = yield this._apiMongo.get(src_environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].COLLECTION.dataQrUser, DNI, 'items');
+                    console.log('res', res);
+                    if (!this._fun.isEmpty(res.result)) {
+                        listTemp = listTemp.concat(res.result[0][DNI]);
                     }
+                    /*  } */
                 }
                 this.list_main = listTemp;
                 this.list_main.forEach(element => {
@@ -1851,7 +1862,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "JwPaginationComponent", function() { return JwPaginationComponent; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "JwPaginationModule", function() { return JwPaginationModule; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "O1h7");
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "7lT8");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "fXoL");
 /* harmony import */ var jw_paginate__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jw-paginate */ "TNpa");
 /* harmony import */ var jw_paginate__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jw_paginate__WEBPACK_IMPORTED_MODULE_2__);
@@ -2197,7 +2208,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<app-header [title]=\"'Módulo de usuarios'\"></app-header>\r\n\r\n<ion-content class=\"content-table\">\r\n\r\n  <!-- Cabecera y botones de acción -->\r\n  <div class=\"row content-header\">\r\n    <div class=\"col-6\">\r\n      <p class=\"title-header\">Listado de\r\n        {{key_table==_env.TABLE_SIS.customer?'compradores':(key_table==_env.TABLE_SIS.employee?'empleados':'proveedores')}}\r\n      </p>\r\n    </div>\r\n    <!-- Content buttons -->\r\n    <div class=\"col-6 content-buttons\">\r\n\r\n<!--       <a href=\"javascript:void(0)\" class=\"btn-3\" (click)=\"importExcel()\" *ngIf=\"key_table ==_env.TABLE_SIS.producer\" >\r\n        <ion-icon name=\"push-outline\"></ion-icon> Importar Excel</a> -->\r\n\r\n      <a href=\"javascript:void(0)\" class=\"btn-3\" (click)=\"genCards()\" *ngIf=\"key_table ==_env.TABLE_SIS.producer\" >\r\n        <ion-icon name=\"card-outline\"></ion-icon> Generar cards </a>\r\n\r\n      <a href=\"javascript:void(0)\" class=\"btn-3\" (click)=\"form()\" >\r\n        <ion-icon name=\"add-circle\"></ion-icon> Crear usuario </a>\r\n    </div>\r\n  </div>\r\n\r\n  <ion-card class=\"card-table\">\r\n    <ion-segment (ionChange)=\"segmentChanged($event)\" style=\"max-width: 500px;margin-bottom: 25px;\" mode=\"md\"\r\n      [value]=\"_env.TABLE_SIS.producer\">\r\n\r\n      <ion-segment-button [value]=\"_env.TABLE_SIS.producer\">\r\n        <ion-label style=\"text-transform: capitalize;\">Proveedores</ion-label>\r\n      </ion-segment-button>\r\n\r\n      <ion-segment-button [value]=\"_env.TABLE_SIS.employee\">\r\n        <ion-label style=\"text-transform: capitalize;\">Empleados</ion-label>\r\n      </ion-segment-button>\r\n\r\n      <ion-segment-button [value]=\"_env.TABLE_SIS.customer\">\r\n        <ion-label style=\"text-transform: capitalize;\">Compradores</ion-label>\r\n      </ion-segment-button>\r\n\r\n    </ion-segment>\r\n\r\n    <p class=\"text-filter\">Filtro de registros</p>\r\n    <div class=\"row\">\r\n\r\n      <div class=\"col-4\">\r\n        <input class=\"form-control\" [ngModel]=\"nameFilter\" (ngModelChange)=\"changeInput($event,0,'input')\"\r\n          placeholder=\"Buscar\">\r\n      </div>\r\n\r\n      <div class=\"col-6 checkbox-filer\">\r\n        <ion-checkbox slot=\"start\" (ionChange)=\"changeInput($event,1,'checkbox')\" color=\"tertiary\">\r\n        </ion-checkbox>\r\n        <label>Ver desactivados</label>\r\n      </div>\r\n    </div>\r\n\r\n    <div class=\"table-responsive table-style\">\r\n      <table class=\"table\">\r\n        <thead>\r\n          <tr>\r\n            <th (click)=\"orderByTable(item.key)\" *ngFor=\"let item of thead\"\r\n              [ngClass]=\"orderBy.key==item.key?'select-col-order' :''\">{{item.name}} <ion-icon\r\n                [name]=\"orderBy.key==item.key?(orderBy.order? 'arrow-down':'arrow-up' ) :'swap-vertical'\"\r\n                class=\"icon-filter\"></ion-icon>\r\n            </th>\r\n            <th>Acciones</th>\r\n          </tr>\r\n        </thead>\r\n        <tbody>\r\n          <tr *ngIf=\"list.length <= 0 && load\">\r\n            <td colspan=\"6\">\r\n              <div class=\"alert alert-secondary\" role=\"alert\">\r\n                <span><i class=\"fa fa-spinner fa-pulse\"></i>\r\n                  Cargando registros...\r\n                </span>\r\n              </div>\r\n\r\n            </td>\r\n          </tr>\r\n\r\n          <tr *ngFor=\"let a of pageOfItems\">\r\n\r\n            <td>{{a.name}}</td>\r\n            <td>{{a.data.group.value}}</td>\r\n            <td>{{a.data.idens[0].number}}</td>\r\n            <td>{{a.data.dids.length!=0? (a.data.dids[0].address | slice:0:6)+' ...\r\n              '+(a.data.dids[0].address | slice:38:42) :'Pendiente de creación'}}\r\n            </td>\r\n\r\n            <td>\r\n              <ion-badge class=\"status\" [ngClass]=\"a.status?'enabled' :'disabled'\">\r\n                {{a.status?'Activo':'Desactivo'}}\r\n              </ion-badge>\r\n            </td>\r\n\r\n            <td>\r\n              <div class=\"dropdown\">\r\n                <div class=\"dropbtn\">\r\n                  <ion-button class=\"button-01\">\r\n                    <ion-icon name=\"settings-outline\" class=\"icon-01\">\r\n                    </ion-icon> <br>\r\n                  </ion-button>\r\n                </div>\r\n\r\n                <div class=\"dropdown-content\">\r\n                  <a href=\"javascript:void(0)\" *ngIf=\"a.data.dids.length!=0\" (click)=\"getDid(a)\">\r\n                    <ion-icon name=\"shield-checkmark-outline\"\r\n                      style=\"font-size: 18px;margin-right: 3px;color: var(--main-color);\"></ion-icon> Ver DID\r\n                  </a>\r\n\r\n                  <a href=\"javascript:void(0)\" (click)=\"configMaster(a)\" *ngIf=\"a.table==_env.TABLE_SIS.employee\">\r\n                    <ion-icon name=\"rocket-outline\" style=\"font-size: 18px;margin-right: 3px;color: var(--main-color);\">\r\n                    </ion-icon> Config. Master\r\n                  </a>\r\n\r\n                  <a href=\"javascript:void(0)\" (click)=\"form(a)\">\r\n                    <ion-icon name=\"create-outline\" class=\"icon-01\"> </ion-icon>Editar\r\n                  </a>\r\n\r\n                  <a href=\"javascript:void(0)\" *ngIf=\"a.status\" (click)=\"changeStatus(a,false)\">\r\n                    <ion-icon name=\"close-circle-outline\" class=\"icon-01\"></ion-icon> Deshabilitar\r\n                  </a>\r\n\r\n                  <a href=\"javascript:void(0)\" *ngIf=\"!a.status\" (click)=\"changeStatus(a,true)\">\r\n                    <ion-icon name=\"checkmark-circle-outline\" class=\"icon-01\"></ion-icon> Habilitar\r\n                  </a>\r\n\r\n                  <a href=\"javascript:void(0)\" (click)=\"delete(a)\" class=\"option-division\">\r\n                    <ion-icon name=\"trash-outline\" class=\"icon-01\">\r\n                    </ion-icon> Eliminar\r\n                  </a>\r\n\r\n                </div>\r\n              </div>\r\n            </td>\r\n\r\n          </tr>\r\n          <tr *ngIf=\"list.length <= 0 && !load\">\r\n            <td colspan=\"5\">No se encontraron registros.</td>\r\n          </tr>\r\n\r\n        </tbody>\r\n\r\n      </table>\r\n      <jw-pagination [items]=\"list\" [pageSize]=\"20\" (changePage)=\"onChangePage($event)\">\r\n      </jw-pagination>\r\n    </div>\r\n  </ion-card>\r\n\r\n</ion-content>");
+/* harmony default export */ __webpack_exports__["default"] = ("<app-header [title]=\"'Módulo de usuarios'\"></app-header>\r\n\r\n<ion-content class=\"content-table\">\r\n\r\n  <!-- Cabecera y botones de acción -->\r\n  <div class=\"row content-header\">\r\n    <div class=\"col-6\">\r\n      <p class=\"title-header\">Listado de\r\n        {{key_table==_env.TABLE_SIS.customer?'compradores':(key_table==_env.TABLE_SIS.employee?'externos':'proveedores')}}\r\n      </p>\r\n    </div>\r\n    <!-- Content buttons -->\r\n    <div class=\"col-6 content-buttons\">\r\n\r\n<!--       <a href=\"javascript:void(0)\" class=\"btn-3\" (click)=\"importExcel()\" *ngIf=\"key_table ==_env.TABLE_SIS.producer\" >\r\n        <ion-icon name=\"push-outline\"></ion-icon> Importar Excel</a> -->\r\n\r\n      <a href=\"javascript:void(0)\" class=\"btn-3\" (click)=\"genCards()\" *ngIf=\"key_table ==_env.TABLE_SIS.producer\" >\r\n        <ion-icon name=\"card-outline\"></ion-icon> Generar cards </a>\r\n\r\n      <a href=\"javascript:void(0)\" class=\"btn-3\" (click)=\"form()\" >\r\n        <ion-icon name=\"add-circle\"></ion-icon> Crear usuario </a>\r\n    </div>\r\n  </div>\r\n\r\n  <ion-card class=\"card-table\">\r\n    <ion-segment (ionChange)=\"segmentChanged($event)\" style=\"max-width: 500px;margin-bottom: 25px;\" mode=\"md\"\r\n      [value]=\"_env.TABLE_SIS.producer\">\r\n\r\n      <ion-segment-button [value]=\"_env.TABLE_SIS.producer\">\r\n        <ion-label style=\"text-transform: capitalize;\">Proveedores</ion-label>\r\n      </ion-segment-button>\r\n\r\n      <ion-segment-button [value]=\"_env.TABLE_SIS.employee\">\r\n        <ion-label style=\"text-transform: capitalize;\">Externos</ion-label>\r\n      </ion-segment-button>\r\n\r\n      <ion-segment-button [value]=\"_env.TABLE_SIS.customer\">\r\n        <ion-label style=\"text-transform: capitalize;\">Compradores</ion-label>\r\n      </ion-segment-button>\r\n\r\n    </ion-segment>\r\n\r\n    <p class=\"text-filter\">Filtro de registros</p>\r\n    <div class=\"row\">\r\n\r\n      <div class=\"col-4\">\r\n        <input class=\"form-control\" [ngModel]=\"nameFilter\" (ngModelChange)=\"changeInput($event,0,'input')\"\r\n          placeholder=\"Buscar\">\r\n      </div>\r\n\r\n      <div class=\"col-6 checkbox-filer\">\r\n        <ion-checkbox slot=\"start\" (ionChange)=\"changeInput($event,1,'checkbox')\" color=\"tertiary\">\r\n        </ion-checkbox>\r\n        <label>Ver desactivados</label>\r\n      </div>\r\n    </div>\r\n\r\n    <div class=\"table-responsive table-style\">\r\n      <table class=\"table\">\r\n        <thead>\r\n          <tr>\r\n            <th (click)=\"orderByTable(item.key)\" *ngFor=\"let item of thead\"\r\n              [ngClass]=\"orderBy.key==item.key?'select-col-order' :''\">{{item.name}} <ion-icon\r\n                [name]=\"orderBy.key==item.key?(orderBy.order? 'arrow-down':'arrow-up' ) :'swap-vertical'\"\r\n                class=\"icon-filter\"></ion-icon>\r\n            </th>\r\n            <th>Acciones</th>\r\n          </tr>\r\n        </thead>\r\n        <tbody>\r\n          <tr *ngIf=\"list.length <= 0 && load\">\r\n            <td colspan=\"6\">\r\n              <div class=\"alert alert-secondary\" role=\"alert\">\r\n                <span><i class=\"fa fa-spinner fa-pulse\"></i>\r\n                  Cargando registros...\r\n                </span>\r\n              </div>\r\n\r\n            </td>\r\n          </tr>\r\n\r\n          <tr *ngFor=\"let a of pageOfItems\">\r\n\r\n            <td>{{a.name}}</td>\r\n          <!--   <td>{{a.data.group.value}}</td> -->\r\n            <td>{{a.data.idens[0].number}}</td>\r\n            <td>{{a.data.dids.length!=0? (a.data.dids[0].address | slice:0:6)+' ...\r\n              '+(a.data.dids[0].address | slice:38:42) :'Pendiente de creación'}}\r\n            </td>\r\n\r\n            <td>\r\n              <ion-badge class=\"status\" [ngClass]=\"a.status?'enabled' :'disabled'\">\r\n                {{a.status?'Activo':'Desactivo'}}\r\n              </ion-badge>\r\n            </td>\r\n\r\n            <td>\r\n              <div class=\"dropdown\">\r\n                <div class=\"dropbtn\">\r\n                  <ion-button class=\"button-01\">\r\n                    <ion-icon name=\"settings-outline\" class=\"icon-01\">\r\n                    </ion-icon> <br>\r\n                  </ion-button>\r\n                </div>\r\n\r\n                <div class=\"dropdown-content\">\r\n                  <a href=\"javascript:void(0)\" *ngIf=\"a.data.dids.length!=0\" (click)=\"getDid(a)\">\r\n                    <ion-icon name=\"shield-checkmark-outline\"\r\n                      style=\"font-size: 18px;margin-right: 3px;color: var(--main-color);\"></ion-icon> Ver DID\r\n                  </a>\r\n\r\n                  <a href=\"javascript:void(0)\" (click)=\"configMaster(a)\" *ngIf=\"a.table==_env.TABLE_SIS.employee\">\r\n                    <ion-icon name=\"rocket-outline\" style=\"font-size: 18px;margin-right: 3px;color: var(--main-color);\">\r\n                    </ion-icon> Config. Master\r\n                  </a>\r\n\r\n                  <a href=\"javascript:void(0)\" (click)=\"form(a)\">\r\n                    <ion-icon name=\"create-outline\" class=\"icon-01\"> </ion-icon>Editar\r\n                  </a>\r\n\r\n                  <a href=\"javascript:void(0)\" *ngIf=\"a.status\" (click)=\"changeStatus(a,false)\">\r\n                    <ion-icon name=\"close-circle-outline\" class=\"icon-01\"></ion-icon> Deshabilitar\r\n                  </a>\r\n\r\n                  <a href=\"javascript:void(0)\" *ngIf=\"!a.status\" (click)=\"changeStatus(a,true)\">\r\n                    <ion-icon name=\"checkmark-circle-outline\" class=\"icon-01\"></ion-icon> Habilitar\r\n                  </a>\r\n\r\n                  <a href=\"javascript:void(0)\" (click)=\"delete(a)\" class=\"option-division\">\r\n                    <ion-icon name=\"trash-outline\" class=\"icon-01\">\r\n                    </ion-icon> Eliminar\r\n                  </a>\r\n\r\n                </div>\r\n              </div>\r\n            </td>\r\n\r\n          </tr>\r\n          <tr *ngIf=\"list.length <= 0 && !load\">\r\n            <td colspan=\"5\">No se encontraron registros.</td>\r\n          </tr>\r\n\r\n        </tbody>\r\n\r\n      </table>\r\n      <jw-pagination [items]=\"list\" [pageSize]=\"20\" (changePage)=\"onChangePage($event)\">\r\n      </jw-pagination>\r\n    </div>\r\n  </ion-card>\r\n\r\n</ion-content>");
 
 /***/ }),
 
@@ -4121,6 +4132,13 @@ let CreatePantallaComponent = class CreatePantallaComponent {
          this.list[ev.detail.to] = itm;
          console.log('LIST',this.list); */
     }
+    addToOrder(from, to, elm) {
+        console.log('from', from);
+        console.log('to', to);
+        this.list.splice(from, 1);
+        this.list.splice(to + 1, 0, elm);
+        this.sreenForm.controls['fields'].setValue(this.list);
+    }
     toggleReorderGroup() {
         this.reorderGroup.disabled = !this.reorderGroup.disabled;
     }
@@ -4379,9 +4397,28 @@ let CreatePantallaComponent = class CreatePantallaComponent {
         return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function* () {
             if (this._fun.isEmpty(this.listVisType, this.listFieldType, this.listInputType, this.listFieldCert))
                 return;
+            let listSections = this.list.filter(d => d.section == true);
+            console.log('listSections', listSections);
+            let codeSelect = '';
+            if (data) {
+                for (let x = 0; x < this.list.length; x++) {
+                    const elmt = this.list[x];
+                    if (elmt.section)
+                        codeSelect = elmt.code;
+                    else {
+                        console.log('elmt', elmt);
+                        console.log('data', data);
+                        if (elmt.field.key == data.field.key)
+                            break;
+                    }
+                    ;
+                }
+            }
             const modal = yield this._mod.create({
                 component: src_app_components_add_field_add_field_component__WEBPACK_IMPORTED_MODULE_8__["AddFieldComponent"],
                 componentProps: {
+                    codeSelect,
+                    listSections,
                     data,
                     index,
                     listVisType: this.listVisType,
@@ -4394,12 +4431,33 @@ let CreatePantallaComponent = class CreatePantallaComponent {
                 if (this._fun.isVarInvalid(res.data))
                     return;
                 if (!this._fun.isVarInvalid(res.data.confirm)) {
-                    console.log(res.data.confirm);
+                    console.log('res.data.confirm', res.data.confirm);
                     let arr = this.sreenForm.controls['fields'].value;
-                    if (this._fun.isVarInvalid(data))
+                    if (this._fun.isVarInvalid(data)) {
                         arr.push(res.data.confirm);
-                    else
+                        let index2 = 0;
+                        let filteredObj = this.list.find(function (item, i) {
+                            if (item.code == res.data.confirm.field.data.sectionSelect) {
+                                console.log('INDEX', i);
+                                index2 = i;
+                                return i;
+                            }
+                        });
+                        this.addToOrder(arr.length - 1, index2, res.data.confirm);
+                    }
+                    else {
                         arr[index] = res.data.confirm;
+                        /* ****** */
+                        let index3 = 0;
+                        let filteredObj = this.list.find(function (item, i) {
+                            if (item.code == res.data.confirm.field.data.sectionSelect) {
+                                console.log('INDEX', i);
+                                index3 = i;
+                                return i;
+                            }
+                        });
+                        this.addToOrder(index, index3, res.data.confirm);
+                    }
                     this.sreenForm.controls['fields'].setValue(arr);
                     /*         console.log(res.data.confirm.field.data.properties.SYSTEM); */
                     console.log('this.sreenForm.value', this.sreenForm.value);
