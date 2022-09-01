@@ -745,7 +745,7 @@ let ApiMongoService = class ApiMongoService {
     }
     delete(collection, table, key) {
         const URL = this.dominio.concat(`db/${collection}/${table}/${key}`);
-        console.log('URL DELETE', URL);
+        /*   console.log('URL DELETE',URL); */
         return this._http.delete(URL).toPromise();
     }
     getkey(collection, table, key) {
@@ -758,29 +758,29 @@ let ApiMongoService = class ApiMongoService {
     }
     create(collection, table, key, body, upsert) {
         const URL = this.dominio.concat(`db/${collection}/${table}/${key}/?upsert=${upsert}`);
-        console.log('URL', URL);
-        console.log('collection', collection);
+        /* console.log('URL', URL); */
+        /* console.log('collection', collection);
         console.log('table', table);
         console.log('key', key);
-        console.log('upsert', upsert);
-        console.log('body', body);
+        console.log('upsert', upsert); */
+        /* console.log('body', body); */
         return this._http.post(URL, body).toPromise();
     }
     get(collection, table, item) {
         const URL = this.dominio.concat(`db/${collection}/${table}/${item}`);
-        console.log('URL', URL);
+        /* console.log('URL', URL); */
         return this._http.get(URL).toPromise();
     }
     postGenerate(params, body) {
         const URL = this.dominio.concat(`${params}`);
-        console.log('URL', URL);
-        console.log('body', body);
+        /* console.log('URL', URL); */
+        /* console.log('body', body); */
         return this._http.post(URL, body, { headers: this.headers }).toPromise();
     }
     filter(collection, table, filter) {
         const URL = this.dominio.concat(`db/${collection}/${table}/filter`);
-        console.log('URL', URL);
-        console.log('filter', filter);
+        /* console.log('URL', URL); */
+        /* console.log('filter',filter); */
         return this._http.post(URL, filter).toPromise();
     }
     uploadFile(fileB64, ext) {
@@ -795,7 +795,7 @@ let ApiMongoService = class ApiMongoService {
     }
     _filter(collection, table, filter) {
         const URL = this.dominio.concat(`db/${collection}/${table}/filter`);
-        console.log('URL', URL);
+        /* console.log('URL', URL); */
         return this._http.post(URL, filter);
     }
     _get(collection, table, item) {
@@ -804,12 +804,12 @@ let ApiMongoService = class ApiMongoService {
     }
     _create(collection, table, key, body, upsert) {
         const URL = this.dominio.concat(`db/${collection}/${table}/${key}/?upsert=${upsert}`);
-        console.log('URL', URL);
-        console.log('collection', collection);
-        console.log('table', table);
-        console.log('key', key);
-        console.log('upsert', upsert);
-        console.log('body', body);
+        /* console.log('URL', URL); */
+        /*  console.log('collection', collection);
+         console.log('table', table);
+         console.log('key', key);
+         console.log('upsert', upsert); */
+        /* console.log('body', body); */
         return this._http.post(URL, body);
     }
 };

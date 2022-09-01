@@ -1357,7 +1357,7 @@ ion-input {
 }
 .button-02 {
   text-transform: initial;
-  --background: var(--color-1);
+  --background: rgb(61, 61, 61);
   color: #fff;
   --border-radius: 8px;
   font-size: 11px;
