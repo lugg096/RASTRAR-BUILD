@@ -768,7 +768,7 @@ let ApiMongoService = class ApiMongoService {
     }
     get(collection, table, item) {
         const URL = this.dominio.concat(`db/${collection}/${table}/${item}`);
-        /* console.log('URL', URL); */
+        console.log('URL', URL);
         return this._http.get(URL).toPromise();
     }
     postGenerate(params, body) {

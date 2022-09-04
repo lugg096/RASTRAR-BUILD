@@ -2235,6 +2235,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var src_app_services_apiMongo_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! src/app/services/apiMongo.service */ "GtMO");
 /* harmony import */ var src_app_services_contracts_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! src/app/services/contracts.service */ "Ik1h");
 /* harmony import */ var src_app_components_get_cred_get_cred_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! src/app/components/get-cred/get-cred.component */ "GHh1");
+/* harmony import */ var src_app_services_auth_service__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! src/app/services/auth.service */ "lGQG");
+
 
 
 
@@ -2247,7 +2249,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let DocExternComponent = class DocExternComponent {
-    constructor(_contractsService, _fun, _apiMongo, _mod) {
+    constructor(_auth, _contractsService, _fun, _apiMongo, _mod) {
+        this._auth = _auth;
         this._contractsService = _contractsService;
         this._fun = _fun;
         this._apiMongo = _apiMongo;
@@ -2286,8 +2289,14 @@ let DocExternComponent = class DocExternComponent {
     }
     ngOnInit() {
         this.key_table = src_environments_environment__WEBPACK_IMPORTED_MODULE_5__["environment"].TABLE_SIS.producer;
-        this.getParamas();
-        this.getList();
+        this._auth.getUser().subscribe((user) => Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function* () {
+            if (!user)
+                return;
+            this.userSesion = user;
+            this.key_table = src_environments_environment__WEBPACK_IMPORTED_MODULE_5__["environment"].TABLE_SIS.producer;
+            this.getParamas();
+            this.getList();
+        }));
     }
     segmentChanged(value) {
         if (this.load)
@@ -2300,7 +2309,14 @@ let DocExternComponent = class DocExternComponent {
         return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function* () {
             this.load = true;
             try {
-                const res = yield this._apiMongo.filter(src_environments_environment__WEBPACK_IMPORTED_MODULE_5__["environment"].COLLECTION.document, src_environments_environment__WEBPACK_IMPORTED_MODULE_5__["environment"].TABLE_SIS.external, { 'data.partyType': this._fun.enum(this.key_table) });
+                let res;
+                if (this.userSesion.data.role.key == 'MASTER') {
+                    res = yield this._apiMongo.filter(src_environments_environment__WEBPACK_IMPORTED_MODULE_5__["environment"].COLLECTION.document, src_environments_environment__WEBPACK_IMPORTED_MODULE_5__["environment"].TABLE_SIS.external, { 'data.partyType': this._fun.enum(this.key_table) });
+                }
+                else {
+                    res = yield this._apiMongo.filter(src_environments_environment__WEBPACK_IMPORTED_MODULE_5__["environment"].COLLECTION.document, src_environments_environment__WEBPACK_IMPORTED_MODULE_5__["environment"].TABLE_SIS.external, { 'data.partyType': this._fun.enum(this.key_table), 'data.document.subject.data.uCreator': this.userSesion.data.idens[0].number });
+                }
+                //  res = await this._apiMongo.filter(env.COLLECTION.document, env.TABLE_SIS.external, { 'data.partyType': this._fun.enum(this.key_table) });
                 if (this._fun.isEmpty(res.result)) {
                     this.load = false;
                     return;
@@ -2451,6 +2467,7 @@ let DocExternComponent = class DocExternComponent {
     }
 };
 DocExternComponent.ctorParameters = () => [
+    { type: src_app_services_auth_service__WEBPACK_IMPORTED_MODULE_11__["AuthService"] },
     { type: src_app_services_contracts_service__WEBPACK_IMPORTED_MODULE_9__["ContractsService"] },
     { type: src_app_compartido_funciones__WEBPACK_IMPORTED_MODULE_7__["Funciones"] },
     { type: src_app_services_apiMongo_service__WEBPACK_IMPORTED_MODULE_8__["ApiMongoService"] },
