@@ -331,6 +331,7 @@ let HomePage = class HomePage {
         return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function* () {
             return new Promise((resolve) => Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function* () {
                 let DNI_USER = /* '72930779' */ user.data.idens[0].number;
+                console.log('DNI_USER', DNI_USER + '***');
                 const res = yield this._apiMongo.get(src_environments_environment__WEBPACK_IMPORTED_MODULE_8__["environment"].COLLECTION.screenUser, DNI_USER, 'items');
                 console.log('res_list', res);
                 if (this._fun.isEmpty(res.result)) {
@@ -340,7 +341,10 @@ let HomePage = class HomePage {
                     return;
                 }
                 let listScreen = [];
+                console.log('ENTRO 0');
+                console.log('ENTRO 1', res.result[0]);
                 for (let index = 0; index < res.result[0][DNI_USER].length; index++) {
+                    console.log('ENTRO', index);
                     let screen = res.result[0][DNI_USER][index].data;
                     screen.key = res.result[0][DNI_USER][index].key;
                     listScreen.push(screen);

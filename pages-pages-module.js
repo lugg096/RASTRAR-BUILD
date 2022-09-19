@@ -1634,7 +1634,8 @@ let PantallasComponent = class PantallasComponent {
             { key: 'status', name: 'Estado' },
         ];
         this.optionFilter = [
-            { key: 'key', value: '', type: 'string' },
+            /* { key: 'key', value: '', type: 'string' }, */
+            { key: 'name', value: '', type: 'string' },
             { key: 'status', value: false, type: 'boolean' }
         ];
     }
@@ -1642,6 +1643,27 @@ let PantallasComponent = class PantallasComponent {
     }
     ionViewDidEnter() {
         this.getList();
+    }
+    duplicar(key_table) {
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function* () {
+            try {
+                let res = yield this._apiMongo.get(src_environments_environment__WEBPACK_IMPORTED_MODULE_9__["environment"].COLLECTION.object, src_environments_environment__WEBPACK_IMPORTED_MODULE_9__["environment"].TABLE_SIS.screen, key_table);
+                let screen = res.result[0].screen[0];
+                let dataDupl = screen.data;
+                dataDupl.name = screen.name + ' (COPIA)';
+                dataDupl.status = true;
+                const res_create = yield this._apiMongo.create(src_environments_environment__WEBPACK_IMPORTED_MODULE_9__["environment"].COLLECTION.object, src_environments_environment__WEBPACK_IMPORTED_MODULE_9__["environment"].TABLE_SIS.screen, this._fun.makeCode(), dataDupl, false);
+                console.log('MOSTRAR 2', res);
+                if (this._fun.isVarInvalid(res.result)) {
+                    yield this._fun.alertError(res.message);
+                    return;
+                }
+                yield this._fun.alertSucc('Registro fue duplicado correctamente');
+            }
+            catch (error) {
+                yield this._fun.alertError(error);
+            }
+        });
     }
     getList() {
         return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function* () {
@@ -1691,6 +1713,7 @@ let PantallasComponent = class PantallasComponent {
             }
             return filter1 && filter2;
         });
+        console.log('LIST FILTER', this.list);
         this.orderList();
     }
     orderByTable(key) {
@@ -1857,7 +1880,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "JwPaginationComponent", function() { return JwPaginationComponent; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "JwPaginationModule", function() { return JwPaginationModule; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "O1h7");
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "7lT8");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "fXoL");
 /* harmony import */ var jw_paginate__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jw-paginate */ "TNpa");
 /* harmony import */ var jw_paginate__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jw_paginate__WEBPACK_IMPORTED_MODULE_2__);
@@ -3446,7 +3469,7 @@ let CreatePantallaComponent = class CreatePantallaComponent {
                     "data": {
                         "key": "name_titular",
                         "value": "",
-                        "placeholder": "Igrese nombre",
+                        "placeholder": "Ingrese nombre",
                         "type": {
                             "collection": "general",
                             "table": "type_field",
@@ -4703,9 +4726,11 @@ let CreatePantallaComponent = class CreatePantallaComponent {
                     ;
                 }
             }
+            console.log('certificateType', this.sreenForm.controls['certificateType'].value.key);
             const modal = yield this._mod.create({
                 component: src_app_components_add_field_add_field_component__WEBPACK_IMPORTED_MODULE_8__["AddFieldComponent"],
                 componentProps: {
+                    certificateType: this.sreenForm.controls['certificateType'].value.key,
                     codeSelect,
                     listSections,
                     data,
@@ -5239,7 +5264,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<app-header [title]=\"'Pantallas del sitema'\"></app-header>\r\n\r\n<ion-content class=\"content-table\">\r\n\r\n  <!-- Cabecera y botones de acción -->\r\n  <div class=\"row content-header\">\r\n    <div class=\"col-6\">\r\n      <p class=\"title-header\">Listado de pantallas</p>\r\n    </div>\r\n    <!-- Content buttons -->\r\n    <div class=\"col-6 content-buttons\">\r\n   <!--    <ion-button (click)=\"registros('new')\" class=\"button-03\">\r\n        <ion-icon name=\"add\"></ion-icon> Crear pantalla\r\n      </ion-button> -->\r\n\r\n      <a href=\"javascript:void(0)\" class=\"btn-3\" (click)=\"registros('new')\" >\r\n        <ion-icon name=\"add-circle\"></ion-icon> Crear pantalla </a>\r\n    </div>\r\n  </div>\r\n\r\n  <!-- Card del listado -->\r\n  <ion-card class=\"card-table\">\r\n\r\n    <p class=\"text-filter\">Filtro de registros</p>\r\n    <div class=\"row\">\r\n\r\n      <div class=\"col-4\">\r\n        <input class=\"form-control\" [ngModel]=\"nameFilter\" (ngModelChange)=\"changeInput($event,0,'input')\"\r\n          placeholder=\"Buscar por nombre\">\r\n      </div>\r\n\r\n      <div class=\"col-4 checkbox-filer\">\r\n        <ion-checkbox slot=\"start\" (ionChange)=\"changeInput($event,1,'checkbox')\" color=\"tertiary\">\r\n        </ion-checkbox>\r\n        <label>Ver desactivados</label>\r\n      </div>\r\n    </div>\r\n\r\n    <div class=\"table-responsive table-style\">\r\n      <table class=\"table\">\r\n        <thead>\r\n          <tr>\r\n            <th (click)=\"orderByTable(item.key)\" *ngFor=\"let item of thead\"\r\n              [ngClass]=\"orderBy.key==item.key?'select-col-order' :''\">{{item.name}} <ion-icon\r\n                [name]=\"orderBy.key==item.key?(orderBy.order? 'arrow-down':'arrow-up' ) :'swap-vertical'\"\r\n                class=\"icon-filter\"></ion-icon>\r\n            </th>\r\n            <th>Acciones</th>\r\n          </tr>\r\n        </thead>\r\n        <tbody>\r\n          <tr *ngIf=\"list.length <= 0 && load\">\r\n            <td colspan=\"6\">\r\n              <div class=\"alert alert-secondary\" role=\"alert\">\r\n                <span><i class=\"fa fa-spinner fa-pulse\"></i>\r\n                  Cargando registros...\r\n                </span>\r\n              </div>\r\n\r\n            </td>\r\n          </tr>\r\n\r\n          <tr *ngFor=\"let a of pageOfItems\">\r\n\r\n            <td> {{a.name}} </td>\r\n            <td> {{a.data.certificateType.value}} </td>\r\n            <td> {{a.data.action.name}} </td>\r\n            <td> {{a.data.fields.length}} </td>\r\n            <td>\r\n              <ion-badge class=\"status\" [ngClass]=\"a.status?'enabled' :'disabled'\">\r\n                {{a.status?'Activo':'Desactivo'}}\r\n              </ion-badge>\r\n            </td>\r\n\r\n            <td>\r\n              <div class=\"dropdown\">\r\n                <div class=\"dropbtn\">\r\n                  <ion-button class=\"button-01\">\r\n                    <ion-icon name=\"settings-outline\" class=\"icon-01\">\r\n                    </ion-icon> <br>\r\n                  </ion-button>\r\n                </div>\r\n\r\n                <div class=\"dropdown-content\">\r\n    \r\n                  <a href=\"javascript:void(0)\" (click)=\"registros(a.key)\">\r\n                    <ion-icon name=\"create-outline\" class=\"icon-01\"> </ion-icon>Editar\r\n                  </a>\r\n\r\n                  <a href=\"javascript:void(0)\" *ngIf=\"a.status\" (click)=\"changeStatus(a.key,false)\">\r\n                    <ion-icon name=\"close-circle-outline\" class=\"icon-01\"></ion-icon> Deshabilitar\r\n                  </a>\r\n\r\n                  <a href=\"javascript:void(0)\" *ngIf=\"!a.status\" (click)=\"changeStatus(a.key,true)\">\r\n                    <ion-icon name=\"checkmark-circle-outline\" class=\"icon-01\"></ion-icon> Habilitar\r\n                  </a>\r\n\r\n                  <a href=\"javascript:void(0)\" (click)=\"delete(a.key)\" class=\"option-division\">\r\n                    <ion-icon name=\"trash-outline\" class=\"icon-01\">\r\n                    </ion-icon> Eliminar\r\n                  </a>\r\n\r\n                </div>\r\n              </div>\r\n            </td>\r\n\r\n          </tr>\r\n          <tr *ngIf=\"list.length <= 0 && !load\">\r\n            <td colspan=\"5\">No se encontraron registros.</td>\r\n          </tr>\r\n\r\n        </tbody>\r\n\r\n      </table>\r\n      <jw-pagination [items]=\"list\" [pageSize]=\"20\" (changePage)=\"onChangePage($event)\">\r\n      </jw-pagination>\r\n    </div>\r\n\r\n  </ion-card>\r\n</ion-content>");
+/* harmony default export */ __webpack_exports__["default"] = ("<app-header [title]=\"'Pantallas del sitema'\"></app-header>\r\n\r\n<ion-content class=\"content-table\">\r\n\r\n  <!-- Cabecera y botones de acción -->\r\n  <div class=\"row content-header\">\r\n    <div class=\"col-6\">\r\n      <p class=\"title-header\">Listado de pantallas</p>\r\n    </div>\r\n    <!-- Content buttons -->\r\n    <div class=\"col-6 content-buttons\">\r\n   <!--    <ion-button (click)=\"registros('new')\" class=\"button-03\">\r\n        <ion-icon name=\"add\"></ion-icon> Crear pantalla\r\n      </ion-button> -->\r\n\r\n      <a href=\"javascript:void(0)\" class=\"btn-3\" (click)=\"registros('new')\" >\r\n        <ion-icon name=\"add-circle\"></ion-icon> Crear pantalla </a>\r\n    </div>\r\n  </div>\r\n\r\n  <!-- Card del listado -->\r\n  <ion-card class=\"card-table\">\r\n\r\n    <p class=\"text-filter\">Filtro de registros</p>\r\n    <div class=\"row\">\r\n\r\n      <div class=\"col-4\">\r\n        <input class=\"form-control\" [ngModel]=\"nameFilter\" (ngModelChange)=\"changeInput($event,0,'input')\"\r\n          placeholder=\"Buscar por nombre\">\r\n      </div>\r\n\r\n      <div class=\"col-4 checkbox-filer\">\r\n        <ion-checkbox slot=\"start\" (ionChange)=\"changeInput($event,1,'checkbox')\" color=\"tertiary\">\r\n        </ion-checkbox>\r\n        <label>Ver desactivados</label>\r\n      </div>\r\n    </div>\r\n\r\n    <div class=\"table-responsive table-style\">\r\n      <table class=\"table\">\r\n        <thead>\r\n          <tr>\r\n            <th (click)=\"orderByTable(item.key)\" *ngFor=\"let item of thead\"\r\n              [ngClass]=\"orderBy.key==item.key?'select-col-order' :''\">{{item.name}} <ion-icon\r\n                [name]=\"orderBy.key==item.key?(orderBy.order? 'arrow-down':'arrow-up' ) :'swap-vertical'\"\r\n                class=\"icon-filter\"></ion-icon>\r\n            </th>\r\n            <th>Acciones</th>\r\n          </tr>\r\n        </thead>\r\n        <tbody>\r\n          <tr *ngIf=\"list.length <= 0 && load\">\r\n            <td colspan=\"6\">\r\n              <div class=\"alert alert-secondary\" role=\"alert\">\r\n                <span><i class=\"fa fa-spinner fa-pulse\"></i>\r\n                  Cargando registros...\r\n                </span>\r\n              </div>\r\n\r\n            </td>\r\n          </tr>\r\n\r\n          <tr *ngFor=\"let a of pageOfItems\">\r\n\r\n            <td> {{a.name}} </td>\r\n            <td> {{a.data.certificateType.value}} </td>\r\n            <td> {{a.data.action.name}} </td>\r\n            <td> {{a.data.fields.length}} </td>\r\n            <td>\r\n              <ion-badge class=\"status\" [ngClass]=\"a.status?'enabled' :'disabled'\">\r\n                {{a.status?'Activo':'Desactivo'}}\r\n              </ion-badge>\r\n            </td>\r\n\r\n            <td>\r\n              <div class=\"dropdown\">\r\n                <div class=\"dropbtn\">\r\n                  <ion-button class=\"button-01\">\r\n                    <ion-icon name=\"settings-outline\" class=\"icon-01\">\r\n                    </ion-icon> <br>\r\n                  </ion-button>\r\n                </div>\r\n\r\n                <div class=\"dropdown-content\">\r\n\r\n                  <a href=\"javascript:void(0)\" (click)=\"duplicar(a.key)\">\r\n                    <ion-icon name=\"copy-outline\" class=\"icon-01\"></ion-icon> Duplicar\r\n                  </a>\r\n    \r\n                  <a href=\"javascript:void(0)\" (click)=\"registros(a.key)\">\r\n                    <ion-icon name=\"create-outline\" class=\"icon-01\"> </ion-icon>Editar\r\n                  </a>\r\n\r\n                  <a href=\"javascript:void(0)\" *ngIf=\"a.status\" (click)=\"changeStatus(a.key,false)\">\r\n                    <ion-icon name=\"close-circle-outline\" class=\"icon-01\"></ion-icon> Deshabilitar\r\n                  </a>\r\n\r\n                  <a href=\"javascript:void(0)\" *ngIf=\"!a.status\" (click)=\"changeStatus(a.key,true)\">\r\n                    <ion-icon name=\"checkmark-circle-outline\" class=\"icon-01\"></ion-icon> Habilitar\r\n                  </a>\r\n\r\n                  <a href=\"javascript:void(0)\" (click)=\"delete(a.key)\" class=\"option-division\">\r\n                    <ion-icon name=\"trash-outline\" class=\"icon-01\">\r\n                    </ion-icon> Eliminar\r\n                  </a>\r\n\r\n                </div>\r\n              </div>\r\n            </td>\r\n\r\n          </tr>\r\n          <tr *ngIf=\"list.length <= 0 && !load\">\r\n            <td colspan=\"5\">No se encontraron registros.</td>\r\n          </tr>\r\n\r\n        </tbody>\r\n\r\n      </table>\r\n      <jw-pagination [items]=\"list\" [pageSize]=\"20\" (changePage)=\"onChangePage($event)\">\r\n      </jw-pagination>\r\n    </div>\r\n\r\n  </ion-card>\r\n</ion-content>");
 
 /***/ })
 
