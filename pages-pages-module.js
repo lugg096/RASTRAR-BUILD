@@ -3609,7 +3609,7 @@ let CreatePantallaComponent = class CreatePantallaComponent {
                 },
                 system: false,
                 properties: "",
-                required: true,
+                required: false,
                 visibility_type: "C0"
             }
         ];
