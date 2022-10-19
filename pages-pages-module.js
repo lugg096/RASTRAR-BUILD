@@ -2403,6 +2403,7 @@ let DocExternComponent = class DocExternComponent {
                 else {
                     res = yield this._apiMongo.filter(src_environments_environment__WEBPACK_IMPORTED_MODULE_5__["environment"].COLLECTION.document, src_environments_environment__WEBPACK_IMPORTED_MODULE_5__["environment"].TABLE_SIS.external, { 'data.partyType': this._fun.enum(this.key_table), 'data.document.subject.data.uCreator': this.userSesion.data.idens[0].number });
                 }
+                console.log('res_0000000', res);
                 //  res = await this._apiMongo.filter(env.COLLECTION.document, env.TABLE_SIS.external, { 'data.partyType': this._fun.enum(this.key_table) });
                 if (this._fun.isEmpty(res.result)) {
                     this.load = false;
@@ -2410,7 +2411,7 @@ let DocExternComponent = class DocExternComponent {
                 }
                 this.list_main = res.result[0][src_environments_environment__WEBPACK_IMPORTED_MODULE_5__["environment"].TABLE_SIS.external];
                 this.list = this.list_main;
-                this.filter();
+                /*       this.filter(); */
                 this.orderBy.order = true;
                 this.orderBy.key = '';
                 this.orderByTable('key');
